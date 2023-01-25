@@ -17,15 +17,11 @@ Route::get("/", function () {
     return view("welcome");
 });
 
-Route::post("/projects", function () {
-    //validate
-    //persist
-    \App\Models\Project::create(request(["title", "description"]));
-    //redirect
-});
+Route::get("/projects", "App\Http\Controllers\ProjectsController@index");
 
-Route::get("/projects", function () {
-    $projects = \App\Models\Project::all();
+Route::get(
+    "/projects/{project}",
+    "App\Http\Controllers\ProjectsController@show"
+);
 
-    return view("projects.index", compact("projects"));
-});
+Route::post("/projects", "App\Http\Controllers\ProjectsController@store");
