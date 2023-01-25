@@ -12,16 +12,35 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware("auth")->group(function () {
+    Route::get("/projects", "App\Http\Controllers\ProjectsController@index");
+
+    Route::get(
+        "/projects/{project}",
+        "App\Http\Controllers\ProjectsController@show"
+    );
+
+    Route::post("/projects", "App\Http\Controllers\ProjectsController@store");
+
+    Route::get("/profile", [ProfileController::class, "edit"])->name(
+        "profile.edit"
+    );
+    Route::patch("/profile", [ProfileController::class, "update"])->name(
+        "profile.update"
+    );
+    Route::delete("/profile", [ProfileController::class, "destroy"])->name(
+        "profile.destroy"
+    );
+});
 
 Route::get("/", function () {
     return view("welcome");
 });
 
-Route::get("/projects", "App\Http\Controllers\ProjectsController@index");
+Route::get("/dashboard", function () {
+    return view("dashboard");
+})
+    ->middleware(["auth", "verified"])
+    ->name("dashboard");
 
-Route::get(
-    "/projects/{project}",
-    "App\Http\Controllers\ProjectsController@show"
-);
-
-Route::post("/projects", "App\Http\Controllers\ProjectsController@store");
+require __DIR__ . "/auth.php";
